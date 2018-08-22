@@ -21,6 +21,7 @@ from tempest.lib import decorators
 from tempest import test
 
 import ssl
+import testtools
 
 CONF = config.CONF
 
@@ -135,6 +136,7 @@ class TestDashboardBasicOps(test.BaseTestCase):
 
     @decorators.attr(type='smoke')
     @decorators.idempotent_id('4f8851b1-0e69-482b-b63b-84c6e76f6c80')
+    @decorators.retry(testtools.matchers.MismatchError, retry=3, delay=3)
     def test_basic_scenario(self):
         creds = self.os_primary.credentials
         self.check_login_page()
