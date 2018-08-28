@@ -112,6 +112,7 @@ class TestDashboardBasicOps(test.BaseTestCase):
                   'csrfmiddlewaretoken': parser.csrf_token}
         self._get_opener().open(req, parse.urlencode(params).encode())
 
+    @decorators.retry(testtools.matchers.MismatchError, retry=3, delay=3)
     def check_home_page(self):
         response = self._get_opener().open(CONF.dashboard.dashboard_url).read()
         self.assertIn('Overview', response.decode("utf-8"))
@@ -136,7 +137,6 @@ class TestDashboardBasicOps(test.BaseTestCase):
 
     @decorators.attr(type='smoke')
     @decorators.idempotent_id('4f8851b1-0e69-482b-b63b-84c6e76f6c80')
-    @decorators.retry(testtools.matchers.MismatchError, retry=3, delay=3)
     def test_basic_scenario(self):
         creds = self.os_primary.credentials
         self.check_login_page()
